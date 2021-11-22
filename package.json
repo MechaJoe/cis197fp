@@ -1,0 +1,23 @@
+{
+  "name": "cis197fp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MechaJoe/cis197fp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MechaJoe/cis197fp/issues"
+  },
+  "homepage": "https://github.com/MechaJoe/cis197fp#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

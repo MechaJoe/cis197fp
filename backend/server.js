@@ -1,9 +1,11 @@
 const express = require('express')
 const mongoose = require('mongoose')
-const session = require('cookie-session')
+const session = require('express-session')
 const bodyParser = require('body-parser')
+const path = require('path')
+const passport = require('passport')
+const swig = require('swig')
 const UserRouter = require('./routes/account')
-const QuestionRouter = require('./routes/api')
 
 const app = express()
 
@@ -14,29 +16,34 @@ mongoose.connect(MONGO_URI, {
   useUnifiedTopology: true,
 })
 
+const s = new swig.Swig()
+app.engine('html', s.renderFile)
+app.set('view engine', 'html')
+
+// *** static directory *** //
+app.set('views', path.join(__dirname, 'views'))
+
 // handling POST --> req.body
 app.use(express.json())
-
+app.use(express.static(path.join(__dirname, '../client/public')))
 app.use(session({
   name: 'session',
   keys: ['username', 'password'],
+  secret: 'mySecret123',
 }))
+app.use(passport.initialize())
+app.use(passport.session())
 
-// can only access req.session within a POST request
-app.post('/', (req, res) => {
-  if (req.session.username && req.session.password) {
-    res.send(`hello ${req.session.username}`)
-  } else {
-    res.send('please log in')
-  }
-})
-
-app.use('/account', UserRouter)
-app.use('/api', QuestionRouter)
+app.use('/', UserRouter)
 app.use(bodyParser.json())
 
-app.use((err, req, res, next) => {
-  res.status(500).send('Something broke!')
+// app.use((err, req, res, next) => {
+//   res.status(500).send('Something broke!')
+// })
+
+// set favicon
+app.get('/favicon.ico', (req, res) => {
+  res.status(404).send()
 })
 
 app.listen(3000, () => {

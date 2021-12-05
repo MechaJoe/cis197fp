@@ -1,6 +1,6 @@
 const passport = require('passport')
 const LinkedInStrategy = require('passport-linkedin-oauth2').Strategy
-
+const GoogleStrategy = require('passport-google-oauth20').Strategy
 const User = require('../model/user')
 const config = require('../_config')
 const init = require('./init')

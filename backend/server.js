@@ -16,19 +16,10 @@ mongoose.connect(MONGO_URI, {
   useUnifiedTopology: true,
 })
 
-const s = new swig.Swig()
-app.engine('html', s.renderFile)
-app.set('view engine', 'html')
-
-// *** static directory *** //
-app.set('views', path.join(__dirname, 'views'))
-
-// handling POST --> req.body
 app.use(express.json())
-app.use(express.static(path.join(__dirname, '../client/public')))
 app.use(session({
   name: 'session',
-  keys: ['username', 'password'],
+  keys: ['username', 'userID'],
   secret: 'mySecret123',
 }))
 app.use(passport.initialize())
@@ -37,6 +28,8 @@ app.use(passport.session())
 app.use('/', UserRouter)
 app.use(bodyParser.json())
 
+app.use(express.static('dist')) // set the static folder
+
 // app.use((err, req, res, next) => {
 //   res.status(500).send('Something broke!')
 // })
@@ -44,6 +37,11 @@ app.use(bodyParser.json())
 // set favicon
 app.get('/favicon.ico', (req, res) => {
   res.status(404).send()
+})
+
+// set the initial entry point
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'))
 })
 
 app.listen(3000, () => {

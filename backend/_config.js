@@ -1,8 +1,8 @@
 const ids = {
-  github: {
-    clientID: '',
-    clientSecret: '',
-    callbackURL: 'http://127.0.0.1:3000/auth/github/callback',
+  google: {
+    clientID: '893129803163-gkh7t8mt7vqpmjq93vq77o5unaop19s2.apps.googleusercontent.com',
+    clientSecret: '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',
+    callbackURL: 'http://127.0.0.1:3000/auth/google/callback',
   },
   linkedin: {
     clientID: '778iog1d81wmcx',

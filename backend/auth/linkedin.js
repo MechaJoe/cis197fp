@@ -26,10 +26,9 @@ passport.use(new LinkedInStrategy({
     upsert: true,
   }
 
-  // update the user if s/he exists or add a new user
   User.findOneAndUpdate(searchQuery, updates, options, (err, user) => {
     if (err) {
-      return done(err)
+      return done(err, null)
     }
     return done(null, user)
   })

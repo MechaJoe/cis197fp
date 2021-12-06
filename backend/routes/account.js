@@ -37,6 +37,7 @@ router.get('/auth/linkedin/callback',
     // Successful authentication, redirect home.
     req.session.username = req.user.username
     req.session.userID = req.user.userID
+    req.session.spending = req.user.spending
     res.redirect('/')
   })
 
@@ -52,6 +53,7 @@ router.get('/auth/google/callback',
     // Successful authentication, redirect home.
     req.session.username = req.user.username
     req.session.userID = req.user.userID
+    req.session.spending = req.user.spending
     res.redirect('/')
   })
 
@@ -62,6 +64,43 @@ router.get('/session', (req, res) => {
   } else {
     res.send('user is not logged in')
   }
+})
+
+// Update total user spending
+router.post('/spending', async (req, res) => {
+  const { spending } = req.body
+  const { username } = req.session
+  User.findOneAndUpdate({ username }, { $inc: { spending } }).exec(async () => {
+    const user = await User.findOne({ username }, { spending: 1 })
+    res.send('receipt processed')
+  })
+})
+
+router.get('/spending', async (req, res) => {
+  const user = await User.findOne({ username: req.session.username }, { spending: 1 })
+  let spending = null
+  if (typeof user === 'object' && user !== null) {
+    spending = user.spending
+  }
+  if (spending === null || spending === undefined) {
+    res.send('spending not found')
+  } else {
+    req.session.spending = spending
+    res.json({ userSpending: spending })
+  }
+})
+
+router.post('/splitting', async (req, res) => {
+  req.session.payers = req.body.payers
+  req.session.expenses = req.body.expenses
+  console.log(req.session.payers)
+  console.log(req.session.expenses)
+  res.send('splitting created')
+})
+
+router.get('/splitting', async (req, res) => {
+  const { payers, expenses } = req.session
+  res.json({ payers, expenses })
 })
 
 module.exports = router
